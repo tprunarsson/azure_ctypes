@@ -54,10 +54,11 @@ input_json = json.dumps([
 
 # Call the C function
 result_ptr = lib.process_json(input_json.encode('utf-8'))
-
+ 
 # Access the resulting JSON
 if result_ptr:
-    result_json = result_ptr.contents.json_result.decode('utf-8')  # Extract the JSON string
+    #result_json = result_ptr.contents.json_result.decode('utf-8')  # Extract the JSON string
+    result_json = ctypes.string_at(result_ptr).decode("utf-8")
     print("Modified JSON from C:")
     print(result_json)
 
