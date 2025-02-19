@@ -2,18 +2,20 @@ import ctypes
 import json
 
 # Define the JsonResult struct in Python
-class JsonResult(ctypes.Structure):
-    _fields_ = [("json_result", ctypes.c_char_p)]
+#class JsonResult(ctypes.Structure):
+#    _fields_ = [("json_result", ctypes.c_char_p)]
 
 # Load the shared library
 lib = ctypes.CDLL("./libjson_processor.so")
 
 # Configure the process_json function
-lib.process_json.restype = ctypes.POINTER(JsonResult)  # Returns a pointer to JsonResult
+#lib.process_json.restype = ctypes.POINTER(JsonResult)  # Returns a pointer to JsonResult
+lib.process_json.restype = ctypes.c_void_p
 lib.process_json.argtypes = [ctypes.c_char_p]
 
 # Configure the free_json_result function
-lib.free_json_result.argtypes = [ctypes.POINTER(JsonResult)]
+#lib.free_json_result.argtypes = [ctypes.POINTER(JsonResult)]
+lib.free_json_result.argtypes = [ctypes.c_void_p]
 lib.free_json_result.restype = None
 
 # Input JSON (your provided example)
