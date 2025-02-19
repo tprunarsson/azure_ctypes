@@ -1,13 +1,59 @@
+# Detect OS and set correct shared library file extension
+UNAME_S := $(shell uname -s)
+
+# Compiler and flags
 CC = gcc
-CFLAGS = -Wall -fPIC -I/opt/homebrew/include
-LDFLAGS = -shared -L/opt/homebrew/lib -ljansson
-TARGET = libjson_processor.so
+ifeq ($(UNAME_S),Linux)
+    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/ 
+else ifeq ($(UNAME_S),Darwin)
+    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/ -I /opt/homebrew/include
+else
+    $(error Unsupported OS: $(UNAME_S))
+endif
 
-# Build the shared library
-$(TARGET): json_processor.c
-	$(CC) $(CFLAGS) -o $(TARGET) json_processor.c $(LDFLAGS)
+# Source files
+SRCS = json_processor.c linprog.c
 
-# Clean up generated files
+# Object files
+OBJS = $(SRCS:.c=.o)
+
+# Linker flags
+ifeq ($(UNAME_S),Linux)
+    LDFLAGS = -L../HiGHS/build/lib 
+else ifeq ($(UNAME_S),Darwin)
+    LDFLAGS = -L../HiGHS/build/lib -L/opt/homebrew/lib
+else
+    $(error Unsupported OS: $(UNAME_S))
+endif
+
+LDLIBS = -lhighs -lm -ljansson
+
+
+ifeq ($(UNAME_S),Linux)
+    SHARED_LIB = libjson_processor.so
+    SHARED_FLAGS = -shared
+else ifeq ($(UNAME_S),Darwin)
+    SHARED_LIB = libjson_processor.dylib
+    SHARED_FLAGS = -dynamiclib
+else
+    $(error Unsupported OS: $(UNAME_S))
+endif
+
+# Default rule to build everything
+all: $(SHARED_LIB)
+
+# Rule to compile object files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Rule to create shared library (automatically detects OS)
+$(SHARED_LIB): $(OBJS)
+	$(CC) $(SHARED_FLAGS) -o $(SHARED_LIB) $(OBJS) $(LDFLAGS) $(LDLIBS)
+
+# Clean up build artifacts
 clean:
-	rm -f $(TARGET)
+	rm -f $(OBJS) $(TARGET) $(SHARED_LIB)
+
+# Rebuild everything
+rebuild: clean all
 

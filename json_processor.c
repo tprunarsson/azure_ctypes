@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <jansson.h>
+#include "linprog.h"
 
 // Struct to store the result and indicate ownership of memory
 
@@ -9,10 +10,15 @@
 //    const char *json_result;
 //} JsonResult;
 
+double time_limit;
+int verbose;
+
 //JsonResult* process_json(const char *json_input) {
     char * process_json(const char *json_input) {
     json_error_t error;
     json_t *root = json_loads(json_input, 0, &error);
+
+    linprog(0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1);
 
     if (!root) {
         fprintf(stderr, "Error parsing JSON: %s\n", error.text);
