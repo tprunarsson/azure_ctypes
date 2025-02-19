@@ -17,17 +17,18 @@ SRCS = json_processor.c linprog.c
 # Object files
 OBJS = $(SRCS:.c=.o)
 
-# Linker flags
+# Static linking of HiGHS
 ifeq ($(UNAME_S),Linux)
     LDFLAGS = -L../HiGHS/build/lib 
+    HIGHS_LIB = ../HiGHS/build/lib/libhighs.a  # Statically link HiGHS
 else ifeq ($(UNAME_S),Darwin)
     LDFLAGS = -L../HiGHS/build/lib -L/opt/homebrew/lib
+    HIGHS_LIB = ../HiGHS/build/lib/libhighs.a  # Statically link HiGHS
 else
     $(error Unsupported OS: $(UNAME_S))
 endif
 
-LDLIBS = -lhighs -lm -ljansson
-
+LDLIBS = $(HIGHS_LIB) -lm -ljansson  # Link the static HiGHS library
 
 ifeq ($(UNAME_S),Linux)
     SHARED_LIB = libjson_processor.so
@@ -56,4 +57,3 @@ clean:
 
 # Rebuild everything
 rebuild: clean all
-
