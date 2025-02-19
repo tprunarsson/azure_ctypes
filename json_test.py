@@ -6,6 +6,7 @@ import json
 #    _fields_ = [("json_result", ctypes.c_char_p)]
 
 # Load the shared library
+ctypes.CDLL("libstdc++.so.6", mode=ctypes.RTLD_GLOBAL) 
 lib = ctypes.CDLL("./libjson_processor.so")
 
 # Configure the process_json function
