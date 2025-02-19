@@ -4,11 +4,13 @@
 #include <jansson.h>
 
 // Struct to store the result and indicate ownership of memory
-typedef struct {
-    const char *json_result;
-} JsonResult;
 
-JsonResult* process_json(const char *json_input) {
+//typedef struct {
+//    const char *json_result;
+//} JsonResult;
+
+//JsonResult* process_json(const char *json_input) {
+    char * process_json(const char *json_input) {
     json_error_t error;
     json_t *root = json_loads(json_input, 0, &error);
 
@@ -52,17 +54,25 @@ JsonResult* process_json(const char *json_input) {
     json_decref(root);
 
     // Create a result struct
-    JsonResult *result = malloc(sizeof(JsonResult));
-    result->json_result = modified_json; // Memory to be freed by free_json_result
+    //JsonResult *result = malloc(sizeof(JsonResult));
+    //result->json_result = modified_json; // Memory to be freed by free_json_result
 
-    return result;
+    //return result;
+    return modified_json;
 }
 
 // Function to free memory allocated in the result
-void free_json_result(JsonResult *result) {
-    if (result) {
-        free((void *)result->json_result); // Free the string
-        free(result);                      // Free the struct
+//void free_json_result(JsonResult *result) {
+//    if (result) {
+//        free((void *)result->json_result); // Free the string
+//        free(result);                      // Free the struct
+//    }
+//}
+void free_json_result(char *json_str) {
+    if (json_str) {
+        //printf("Freeing memory at %p\n", (void *)json_str);
+        free(json_str);
     }
 }
+
 
