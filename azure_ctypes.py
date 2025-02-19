@@ -37,7 +37,8 @@ def HttpExample(req: func.HttpRequest) -> func.HttpResponse:
 
         # Extract the resulting JSON string from the C function
         if result_ptr:
-            result_json = result_ptr.contents.json_result.decode('utf-8')
+            #result_json = result_ptr.contents.json_result.decode('utf-8')
+            result_json = ctypes.string_at(result_ptr).decode("utf-8")
 
             # Free the memory in C
             lib.free_json_result(result_ptr)
