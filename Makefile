@@ -4,12 +4,21 @@ UNAME_S := $(shell uname -s)
 # Compiler and flags
 CC = gcc
 ifeq ($(UNAME_S),Linux)
-    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/ 
+    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/
 else ifeq ($(UNAME_S),Darwin)
-    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/ -I /opt/homebrew/include
+    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/
 else
     $(error Unsupported OS: $(UNAME_S))
 endif
+
+ifeq ($(UNAME_S),Linux)
+    LDFLAGS = -L../HiGHS/build/lib
+else ifeq ($(UNAME_S),Darwin)
+    LDFLAGS = -L../HiGHS/build/lib
+else
+    $(error Unsupported OS: $(UNAME_S))
+endif
+
 
 # Source files
 SRCS = json_processor.c linprog.c
@@ -18,17 +27,17 @@ SRCS = json_processor.c linprog.c
 OBJS = $(SRCS:.c=.o)
 
 # Static linking of HiGHS
-ifeq ($(UNAME_S),Linux)
-    LDFLAGS = -L../HiGHS/build/lib 
-    HIGHS_LIB = ../HiGHS/build/lib/libhighs.a  # Statically link HiGHS
-else ifeq ($(UNAME_S),Darwin)
-    LDFLAGS = -L../HiGHS/build/lib -L/opt/homebrew/lib
-    HIGHS_LIB = ../HiGHS/build/lib/libhighs.a  # Statically link HiGHS
-else
-    $(error Unsupported OS: $(UNAME_S))
-endif
+#ifeq ($(UNAME_S),Linux)
+#    LDFLAGS = 
+#    HIGHS_LIB =   # Statically link HiGHS
+#else ifeq ($(UNAME_S),Darwin)
+#    LDFLAGS = -L../HiGHS/build/lib -L/opt/homebrew/lib
+#    HIGHS_LIB = ../HiGHS/build/lib/libhighs.a  # Statically link HiGHS
+#else
+#    $(error Unsupported OS: $(UNAME_S))
+#endif
 
-LDLIBS = $(HIGHS_LIB) -lm -ljansson  # Link the static HiGHS library
+LDLIBS = -lhighs -lm -ljansson  # Link the static HiGHS library
 
 ifeq ($(UNAME_S),Linux)
     SHARED_LIB = libjson_processor.so
