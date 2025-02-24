@@ -9,6 +9,7 @@ import ctypes
 
 # Load the shared library
 ctypes.CDLL("libstdc++.so.6", mode=ctypes.RTLD_GLOBAL) 
+ctypes.CDLL("libhighs.so.1", mode=ctypes.RTLD_GLOBAL) 
 lib = ctypes.CDLL("./libjson_processor.so")
 
 # Configure the process_json function
