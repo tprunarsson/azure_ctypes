@@ -7,6 +7,7 @@ import json
 
 # Load the shared library
 ctypes.CDLL("./libhighs.so.1", mode=ctypes.RTLD_GLOBAL) 
+ctypes.CDLL("./libscip.so.10.0", mode=ctypes.RTLD_GLOBAL) 
 lib = ctypes.CDLL("./libjson_processor.so")
 
 # Configure the process_json function
