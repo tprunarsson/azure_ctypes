@@ -6,7 +6,7 @@ CC = gcc
 ifeq ($(UNAME_S),Linux)
     CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/
 else ifeq ($(UNAME_S),Darwin)
-    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/
+    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I /opt/homebrew/include/ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/ 
 else
     $(error Unsupported OS: $(UNAME_S))
 endif
@@ -14,11 +14,10 @@ endif
 ifeq ($(UNAME_S),Linux)
     LDFLAGS = -L../HiGHS/build/lib
 else ifeq ($(UNAME_S),Darwin)
-    LDFLAGS = -L../HiGHS/build/lib
+    LDFLAGS = -L../HiGHS/build/lib -L /opt/homebrew/lib/
 else
     $(error Unsupported OS: $(UNAME_S))
 endif
-
 
 # Source files
 SRCS = json_processor.c linprog.c
