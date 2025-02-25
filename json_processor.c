@@ -3,6 +3,8 @@
 #include <string.h>
 #include <jansson.h>
 #include "linprog.h"
+#include "scip_linprog.h"
+
 
 // Struct to store the result and indicate ownership of memory
 
@@ -19,6 +21,7 @@ int verbose;
     json_t *root = json_loads(json_input, 0, &error);
 
     linprog(0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1);
+    scip_linprog_mip(0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 
     if (!root) {
         fprintf(stderr, "Error parsing JSON: %s\n", error.text);

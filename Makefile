@@ -4,23 +4,23 @@ UNAME_S := $(shell uname -s)
 # Compiler and flags
 CC = gcc
 ifeq ($(UNAME_S),Linux)
-    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/
+    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/ -I ../scip/src/ -I ../scip/build/
 else ifeq ($(UNAME_S),Darwin)
-    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I /opt/homebrew/include/ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/ 
+    CFLAGS = -g -Wall -Wextra -fPIC -I ./ -I /opt/homebrew/include/ -I ../HiGHS/build/ -I ../HiGHS/src/ -I ../HiGHS/src/interfaces/ -I ../scip/src/ -I ../scip/build/
 else
     $(error Unsupported OS: $(UNAME_S))
 endif
 
 ifeq ($(UNAME_S),Linux)
-    LDFLAGS = -L../HiGHS/build/lib
+    LDFLAGS = -L../HiGHS/build/lib -L ../scip/build/lib
 else ifeq ($(UNAME_S),Darwin)
-    LDFLAGS = -L../HiGHS/build/lib -L /opt/homebrew/lib/
+    LDFLAGS = -L../HiGHS/build/lib -L /opt/homebrew/lib/ -L ../scip/build/lib
 else
     $(error Unsupported OS: $(UNAME_S))
 endif
 
 # Source files
-SRCS = json_processor.c linprog.c
+SRCS = json_processor.c linprog.c scip_linprog.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
@@ -36,7 +36,7 @@ OBJS = $(SRCS:.c=.o)
 #    $(error Unsupported OS: $(UNAME_S))
 #endif
 
-LDLIBS = -lhighs -lm -ljansson  # Link the static HiGHS library
+LDLIBS = -lhighs -lm -ljansson -lscip # Link the static HiGHS library
 
 ifeq ($(UNAME_S),Linux)
     SHARED_LIB = libjson_processor.so
