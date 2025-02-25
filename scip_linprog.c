@@ -34,6 +34,7 @@ int scip_linprog_mip(
         return 1;
     }
 
+
     // Include default plugins
     SCIPincludeDefaultPlugins(scip);
 
@@ -42,6 +43,10 @@ int scip_linprog_mip(
         fprintf(stderr, "Error setting time limit for SCIP\n");
         return 1;
     }
+
+    SCIPfree(&scip);
+    return success;
+
 
     // Set the verbosity level to 0 (no output)
     if (verbose == 0) {
@@ -85,7 +90,7 @@ int scip_linprog_mip(
     // Add inequality constraints (A_ub x <= b_ub)
     for (int i = 0; i < num_constraints_ub; ++i) {
         SCIP_CONS* cons = NULL;
-	char name[50];
+	    char name[50];
         snprintf(name, sizeof(name), "constraint_ub_%d", i);
         retcode = SCIPcreateConsBasicLinear(scip, &cons, name, 0, NULL, NULL, b_lb[i], b_ub[i]);
         if (retcode != SCIP_OKAY) {
@@ -110,8 +115,8 @@ int scip_linprog_mip(
     // Add equality constraints (A_eq x = b_eq)
     for (int i = 0; i < num_constraints_eq; ++i) {
         SCIP_CONS* cons = NULL;
-	char name[50];
-	snprintf(name, sizeof(name), "constraint_eq_%d", i);
+	    char name[50];
+	    snprintf(name, sizeof(name), "constraint_eq_%d", i);
         retcode = SCIPcreateConsBasicLinear(scip, &cons, name, 0, NULL, NULL, b_eq[i], b_eq[i]);
         if (retcode != SCIP_OKAY) {
             fprintf(stderr, "Error creating equality constraint %d\n", i);
